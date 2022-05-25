@@ -7,9 +7,11 @@ from toTime import TimeMessage, toListTime
 from sql import SQLighter
 from aiogram.dispatcher import FSMContext
 import re
+from config import token_bot
+
 
 # Инициализация Бота
-bot = Bot(token="5301013549:AAFVHj__3AQMLh_qion4_itjJphIXNVz1bo")
+bot = Bot(token=token_bot)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
@@ -52,8 +54,7 @@ async def cancel(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(lambda message: message.text and ('➕ Добавить' in message.text or
-                                                      "📖 Список" in message.text or
-                                                      "🛠 Настройки" in message.text))
+                                                      "📖 Список" in message.text))
 async def menu(message: types.Message, state: FSMContext):
     print("Логика")
     if message.text == "/start":
