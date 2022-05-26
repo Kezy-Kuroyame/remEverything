@@ -66,18 +66,13 @@ class TimeMessage:
             dataTime = (dataTime + delta)
             valueError = False
         elif 'послезавтра' in message:
-            delta = datetime.timedelta(days=1)
+            delta = datetime.timedelta(days=2)
             dataTime = (dataTime + delta)
             valueError = False
 
         if 'в ' in message:
             dataTime_list = list(map(int, re.split(r'\W', dataTime.strftime("%Y %m %d %H %M %S"))))
 
-            if 'час' in message:
-                dataTime = datetime.datetime.combine(
-                    datetime.date(dataTime_list[0], dataTime_list[1], dataTime_list[2]),
-                    datetime.time(1, 0, 0))
-                valueError = False
 
 
             if 'минут' in message:

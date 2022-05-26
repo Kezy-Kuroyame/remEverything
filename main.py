@@ -9,7 +9,6 @@ from aiogram.dispatcher import FSMContext
 import re
 from config import token_bot
 
-
 # Инициализация Бота
 bot = Bot(token=token_bot)
 storage = MemoryStorage()
@@ -22,8 +21,6 @@ db = SQLighter('db.db')
 soon_reminder = dict()
 text = ""
 time_message = datetime.datetime.now()
-
-
 
 """ ---  Telegram bot  ---"""
 
@@ -88,13 +85,12 @@ async def createList(chat_id, edit=False, call=types.CallbackQuery()):
     """Создаётся список напоминаний"""
     print("Список")
     rows = db.get_reminders(chat_id)
-    if rows is not None:
+    if len(rows) != 0:
         user_list = ""
         inline_kb = types.InlineKeyboardMarkup(row_width=7)
         inline_kb.row()
         buttons = []
         for row_index in range(len(rows)):
-
             user_list += f"{row_index + 1}) {rows[row_index][2]} {toListTime(rows[row_index][3])}" + "-" * 75 + "\n"
 
             # Инлайн Клавиатура
@@ -108,6 +104,14 @@ async def createList(chat_id, edit=False, call=types.CallbackQuery()):
         else:
             await bot.send_message(text=user_list,
                                    reply_markup=inline_kb, chat_id=chat_id, parse_mode="Markdown")
+    else:
+        if edit:
+            await call.message.edit_text(text='Ой кажется ваш список пуст :(',
+                                        parse_mode="Markdown")
+        else:
+            await bot.send_message(text='Ой кажется ваш список пуст :(',
+                                   chat_id=chat_id, parse_mode="Markdown")
+
 
 
 """ Логика Добавления"""
@@ -160,8 +164,6 @@ async def createReminderData(message: types.Message, state: FSMContext):
             await state.reset_state()
             await Form.time_state.set()
             return createReminderData
-
-
 
         time_message = time_message.inNormalTime()
         print("Время")
